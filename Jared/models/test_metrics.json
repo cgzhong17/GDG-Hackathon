@@ -1,0 +1,115 @@
+{
+  "test_size": 5718,
+  "classification": {
+    "type": {
+      "accuracy": 0.8582,
+      "macro_f1": 0.8691,
+      "test_ece": 0.007
+    },
+    "queue": {
+      "accuracy": 0.5617,
+      "macro_f1": 0.5715,
+      "test_ece": 0.0196
+    },
+    "priority": {
+      "accuracy": 0.6261,
+      "macro_f1": 0.615,
+      "test_ece": 0.0296
+    }
+  },
+  "high_priority_incident": {
+    "count": 995,
+    "recall": 0.6513,
+    "recall_priority_only": 0.7337,
+    "precision": 0.6261
+  },
+  "calibration": {
+    "type": {
+      "temperature": 0.918,
+      "val_ece_before": 0.0107,
+      "val_ece_after": 0.0105
+    },
+    "queue": {
+      "temperature": 0.848,
+      "val_ece_before": 0.0619,
+      "val_ece_after": 0.0203
+    },
+    "priority": {
+      "temperature": 1.254,
+      "val_ece_before": 0.0435,
+      "val_ece_after": 0.0144
+    }
+  },
+  "val_confidence_thresholds": {
+    "type": {
+      "0.4": {
+        "auto_share": 0.999,
+        "accuracy": 0.864
+      },
+      "0.5": {
+        "auto_share": 0.988,
+        "accuracy": 0.868
+      },
+      "0.6": {
+        "auto_share": 0.909,
+        "accuracy": 0.896
+      },
+      "0.7": {
+        "auto_share": 0.814,
+        "accuracy": 0.923
+      },
+      "0.8": {
+        "auto_share": 0.709,
+        "accuracy": 0.945
+      }
+    },
+    "queue": {
+      "0.4": {
+        "auto_share": 0.733,
+        "accuracy": 0.657
+      },
+      "0.5": {
+        "auto_share": 0.527,
+        "accuracy": 0.726
+      },
+      "0.6": {
+        "auto_share": 0.381,
+        "accuracy": 0.792
+      },
+      "0.7": {
+        "auto_share": 0.261,
+        "accuracy": 0.871
+      },
+      "0.8": {
+        "auto_share": 0.162,
+        "accuracy": 0.933
+      }
+    },
+    "priority": {
+      "0.4": {
+        "auto_share": 0.953,
+        "accuracy": 0.618
+      },
+      "0.5": {
+        "auto_share": 0.715,
+        "accuracy": 0.673
+      },
+      "0.6": {
+        "auto_share": 0.466,
+        "accuracy": 0.743
+      },
+      "0.7": {
+        "auto_share": 0.254,
+        "accuracy": 0.802
+      },
+      "0.8": {
+        "auto_share": 0.107,
+        "accuracy": 0.842
+      }
+    }
+  },
+  "latency": {
+    "mean_ms": 3.73,
+    "p95_ms": 6.88
+  }
+}
