@@ -1,2 +1,14 @@
 __pycache__/
 .venv/
+.env
+.DS_Store
+
+# generated files: ignore everything in artifacts/ except what the live console needs
+artifacts/*
+!artifacts/classifier.joblib
+!artifacts/gate_thresholds.json
+!artifacts/kb.csv
+!artifacts/kb_embeddings.npy
+!artifacts/kb_embedding_ids.npy
+!artifacts/test_inputs.csv
+!artifacts/test_metrics.json

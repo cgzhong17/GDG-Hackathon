@@ -61,7 +61,8 @@ def hpi_alarms(P, regime_near):
     review = np.where(regime_near, rv_d, rv_n)
     page = np.where(regime_near, pg_d, pg_n)
     kw = texts.apply(lambda t: any(p.search(t) for p in SAFETY_NET.values())).to_numpy()
-    return {"page": (s >= page) | kw, "human": (s >= review) | kw}
+    r0 = (P["priority"][0][P["priority"][1].argmax(1)] == "high") & (P["type"][0][P["type"][1].argmax(1)] == "Incident")
+    return {"page": r0 | (s >= page) | kw, "human": r0 | (s >= review) | kw}
 
 
 # ================= scoring (labels loaded only now) =================
@@ -90,7 +91,7 @@ def score(P, regime_near):
     argmax = (pred["priority"] == "high") & (pred["type"] == "Incident")
     out["high_priority_incident"] = {"count": int(truth_hpi.sum()),
                                      "argmax labels (pred high AND Incident)": alarm_stats(argmax),
-                                     "on-call page (R1 page tier + R2 keywords)": alarm_stats(a["page"]),
+                                     "on-call page (R0 + R1 page tier + R2 keywords)": alarm_stats(a["page"]),
                                      "escalated to a human (page or review tier)": alarm_stats(a["human"])}
     out["all_three_correct"] = round(float(np.all([pred[t] == labels[t].to_numpy() for t in C.TARGETS], axis=0).mean()), 4)
     return out

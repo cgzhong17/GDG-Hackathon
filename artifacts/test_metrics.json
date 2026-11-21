@@ -1,0 +1,194 @@
+{
+  "holdout_rows": 5718,
+  "classify_ms_per_ticket_batched": 0.847,
+  "language_detect_ms_per_ticket": 0.423,
+  "embed_and_search_ms_per_ticket_batched": 31.43,
+  "classifier_only": {
+    "type": {
+      "macro_f1": 0.8661,
+      "accuracy": 0.854,
+      "per_class_f1": {
+        "Change": 0.974,
+        "Incident": 0.818,
+        "Problem": 0.68,
+        "Request": 0.991
+      },
+      "per_language_macro_f1": {
+        "en": 0.8888,
+        "de": 0.8355
+      }
+    },
+    "queue": {
+      "macro_f1": 0.5686,
+      "accuracy": 0.5659,
+      "per_class_f1": {
+        "Billing and Payments": 0.79,
+        "Customer Service": 0.494,
+        "General Inquiry": 0.513,
+        "Human Resources": 0.542,
+        "IT Support": 0.485,
+        "Product Support": 0.5,
+        "Returns and Exchanges": 0.51,
+        "Sales and Pre-Sales": 0.505,
+        "Service Outages and Maintenance": 0.747,
+        "Technical Support": 0.601
+      },
+      "per_language_macro_f1": {
+        "en": 0.6261,
+        "de": 0.487
+      }
+    },
+    "priority": {
+      "macro_f1": 0.6166,
+      "accuracy": 0.628,
+      "per_class_f1": {
+        "high": 0.666,
+        "low": 0.554,
+        "medium": 0.63
+      },
+      "per_language_macro_f1": {
+        "en": 0.6795,
+        "de": 0.5303
+      }
+    },
+    "high_priority_incident": {
+      "count": 995,
+      "argmax labels (pred high AND Incident)": {
+        "recall": 0.6613,
+        "precision": 0.6161,
+        "alarm_rate": 0.1868
+      },
+      "on-call page (R0 + R1 page tier + R2 keywords)": {
+        "recall": 0.7276,
+        "precision": 0.4536,
+        "alarm_rate": 0.2791
+      },
+      "escalated to a human (page or review tier)": {
+        "recall": 0.9387,
+        "precision": 0.3522,
+        "alarm_rate": 0.4638
+      }
+    },
+    "all_three_correct": 0.3634
+  },
+  "with_precedent_override": {
+    "type": {
+      "macro_f1": 0.9204,
+      "accuracy": 0.9147,
+      "per_class_f1": {
+        "Change": 0.979,
+        "Incident": 0.896,
+        "Problem": 0.814,
+        "Request": 0.993
+      },
+      "per_language_macro_f1": {
+        "en": 0.9482,
+        "de": 0.8835
+      }
+    },
+    "queue": {
+      "macro_f1": 0.7172,
+      "accuracy": 0.741,
+      "per_class_f1": {
+        "Billing and Payments": 0.858,
+        "Customer Service": 0.693,
+        "General Inquiry": 0.641,
+        "Human Resources": 0.616,
+        "IT Support": 0.695,
+        "Product Support": 0.716,
+        "Returns and Exchanges": 0.694,
+        "Sales and Pre-Sales": 0.651,
+        "Service Outages and Maintenance": 0.829,
+        "Technical Support": 0.78
+      },
+      "per_language_macro_f1": {
+        "en": 0.7877,
+        "de": 0.6199
+      }
+    },
+    "priority": {
+      "macro_f1": 0.7739,
+      "accuracy": 0.7807,
+      "per_class_f1": {
+        "high": 0.805,
+        "low": 0.738,
+        "medium": 0.779
+      },
+      "per_language_macro_f1": {
+        "en": 0.8435,
+        "de": 0.6791
+      }
+    },
+    "high_priority_incident": {
+      "count": 995,
+      "argmax labels (pred high AND Incident)": {
+        "recall": 0.8171,
+        "precision": 0.7721,
+        "alarm_rate": 0.1842
+      },
+      "on-call page (R0 + R1 page tier + R2 keywords)": {
+        "recall": 0.8503,
+        "precision": 0.5301,
+        "alarm_rate": 0.2791
+      },
+      "escalated to a human (page or review tier)": {
+        "recall": 0.9538,
+        "precision": 0.4684,
+        "alarm_rate": 0.3543
+      }
+    },
+    "all_three_correct": 0.6501,
+    "novel_tickets_only (no near-duplicate)": {
+      "n": 2245,
+      "type": 0.812,
+      "queue": 0.3316,
+      "priority": 0.4614,
+      "hpi_escalated_to_human_recall": 0.8866
+    },
+    "coverage (near-duplicate found)": 0.6074,
+    "precedent_label_accuracy_on_covered": {
+      "type": 0.9974,
+      "queue": 0.9652,
+      "priority": 0.9729
+    }
+  },
+  "language_detection": {
+    "agreement_with_dataset_label": 0.8827,
+    "confusion (rows=label, cols=detected)": {
+      "de": {
+        "de": 1764,
+        "en": 671
+      },
+      "en": {
+        "de": 0,
+        "en": 3283
+      }
+    },
+    "note": "all disagreements are 'de'-labelled rows whose text is English (dataset label noise)"
+  },
+  "retrieval": {
+    "top1_similarity_mean": 0.9731,
+    "top1_similarity_p05": 0.9377,
+    "share_below_min_sim": 0.0002,
+    "top1_same_queue": 0.7692,
+    "top1_same_type": 0.9213,
+    "top5_any_same_queue": 0.894,
+    "cross_lingual_share_of_top5": 0.1665
+  },
+  "generation": {
+    "n": 300,
+    "engine": "extractive (local)",
+    "passes_all_grounding_checks": 1.0,
+    "grounded_draft_with_citations": 1.0,
+    "uses_cross_lingual_precedent": 0.0433,
+    "language_match": 1.0,
+    "no_unsupported_figures": 1.0,
+    "gate_status": {
+      "AUTO_DRAFT_READY": 0.45,
+      "ESCALATE_ONCALL": 0.287,
+      "HUMAN_REVIEW": 0.263
+    },
+    "end_to_end_ms_mean": 212.1,
+    "end_to_end_ms_p95": 308.3
+  }
+}

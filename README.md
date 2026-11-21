@@ -7,20 +7,43 @@ Paste a raw ticket (subject optional + body, English or German). SentinelDesk:
 3. **Retrieves** the top-5 most similar *historical* tickets (multilingual embeddings, EN↔DE).
 4. **Drafts a reply in the customer's language** where **every sentence is taken from a cited historical resolution** (`[TKT-xxxxx]`), so it cannot invent policies, prices, guarantees or integrations.
 
-Runs **fully offline** — no ticket text leaves the machine.
+Runs **fully offline** — no ticket text ever leaves the machine (see [Privacy](#privacy--pii)).
 
 ## Quick start
 
+The trained classifier, gate thresholds and knowledge-base embeddings are committed in `artifacts/`, so the console runs straight after install:
+
 ```bash
 pip install -r requirements.txt
-python prepare_data.py       # official 80/20 split -> artifacts/
-python retriever.py          # embed the 80% knowledge base (one-off, ~20 min on CPU)
-python train_classifier.py   # classifier + calibration, then tune_gate.py (val only)
-python evaluate.py --gen 300 # holdout metrics -> artifacts/test_metrics.json
-streamlit run app.py         # live triage console
+streamlit run app.py         # live triage console (first query ~25 s while models load, then ~300 ms)
 ```
 
-Data: `../data/aa_dataset-tickets-multi-lang-5-2-50-version.csv` (official recommended file, 28,587 tickets).
+The first run downloads three small open models from Hugging Face (`intfloat/multilingual-e5-small`, `Helsinki-NLP/opus-mt-en-de`, `opus-mt-de-en`); after that everything runs offline.
+
+Full rebuild from the raw CSV (~35 min on a laptop CPU):
+
+```bash
+python prepare_data.py       # official 80/20 split -> artifacts/
+python retriever.py          # embed the 80% knowledge base (~20 min on CPU)
+python train_classifier.py   # classifier + calibration, then tune_gate.py (val only)
+python evaluate.py --gen 300 # holdout metrics -> artifacts/test_metrics.json
+```
+
+Data: `data/aa_dataset-tickets-multi-lang-5-2-50-version.csv` (official recommended file, 28,587 tickets). All generated files go to `artifacts/` (git-ignored).
+
+## Repository layout
+
+```
+GDG-Hackathon/
+├── *.py, README.md, requirements.txt   final system (this README)
+├── data/                               official dataset (5-2-50 version)
+├── artifacts/                          generated: split, models, embeddings, metrics (git-ignored)
+└── sketch/                             earlier team explorations, kept for reference only (not used by the final system)
+    ├── ghost/   first baseline (20k file, word TF-IDF + calibrated LogReg)
+    ├── Jared/   official split + word/char TF-IDF classifier + keyword escalation rule
+    ├── tens/    data exploration
+    └── data/    20k file and the team's earlier split CSVs
+```
 
 ## Architecture
 
@@ -52,6 +75,7 @@ ticket ─► language detection (lingua EN/DE + stop-word fallback)
 
 | Rule | Fires when | Result |
 |---|---|---|
+| R0 | predicted `priority == high` AND predicted `type == Incident` (the challenge's explicit rule) | 🚨 On-call |
 | R1 page | `P(high)·P(Incident)` ≥ page threshold (val precision ≥ 60%; separate thresholds for near-duplicate vs novel tickets) | 🚨 On-call |
 | R2 | outage / security / healthcare-failure keywords (EN+DE) | 🚨 On-call |
 | R1 review | `P(high)·P(Incident)` ≥ review threshold (val HPI recall ≥ 90%) | 🧑‍💼 Review |
@@ -74,6 +98,20 @@ Every body sentence is copied from (or machine-translated from) an official hist
 
 Remaining sentences are ranked by e5 similarity to the ticket (weighted by precedent similarity), de-duplicated, and 2–4 are kept. If the customer asks for refunds/legal/pricing, a fixed line says a specialist will follow up and nothing is confirmed. A post-check verifies cited ids ⊂ retrieved ids, no unsupported figures, and reply language = ticket language.
 
+### Design trade-off: traceability over fluency
+
+We deliberately chose an extractive composer over a generative LLM. The cost is honest to state:
+
+- Drafts can read **stiffer** than an LLM reply, and some dataset answers are themselves awkwardly phrased.
+- Sentences come from *similar* past tickets, so for an unusual ticket the draft can be **less specific** than the customer's exact question (it tends to ask for the right diagnostics rather than solve the precise case).
+- Only the fixed opening / closing / "specialist will follow up" lines are templated; everything else is a historical sentence.
+
+What we get in return: **every content sentence is traceable to a cited historical resolution**, so the draft cannot fabricate prices, refunds, SLAs, legal guarantees or product integrations, and it works with zero API dependency or cost. Drafts are meant for agent review — the gate sends anything risky, novel or unsupported to a human, and the operator sees the cited precedents next to the draft.
+
+## Privacy / PII
+
+The challenge's PII bonus asks for masking *before ticket text is sent to an external LLM API*. SentinelDesk sends **nothing** externally: classification, retrieval, translation and drafting all run locally on open models, so customer data never leaves the machine — a stronger guarantee than masking. `pii.py` still detects emails, phone numbers, IP addresses, IBAN/card and account numbers, and the console shows what was found so an operator can redact before forwarding a ticket.
+
 ## Holdout results (20% split, 5,718 tickets)
 
 Full numbers: `artifacts/test_metrics.json` (re-generate with `python evaluate.py --gen 300`).
@@ -94,7 +132,7 @@ Full numbers: `artifacts/test_metrics.json` (re-generate with `python evaluate.p
 | | recall | precision | alarm rate |
 |---|---|---|---|
 | Argmax labels (pred high AND Incident) | 81.7% | 77.2% | 18.4% |
-| Paged to on-call (R1 page tier + R2 keywords) | 76.5% | 56.0% | 23.8% |
+| Paged to on-call (R0 + R1 page tier + R2 keywords) | 85.0% | 53.0% | 27.9% |
 | **Escalated to a human (page or review tier)** | **95.4%** | 46.8% | 35.4% |
 | ↳ novel tickets only | 88.7% | – | – |
 
@@ -111,13 +149,14 @@ Gate thresholds are tuned on val separately for near-duplicate vs novel tickets 
 | Drafts passing all grounding checks (ids ⊂ retrieved, no unsupported figures, language) | 100% |
 | Reply language = ticket language | 100% |
 | Language detection vs dataset label | 88.3% — every disagreement is a `de`-labelled row whose text (and official answer) is English; 0 English tickets detected as German |
-| End-to-end latency (classify + retrieve + compose, CPU) | mean 299 ms, p95 548 ms |
+| End-to-end latency (classify + retrieve + compose, CPU) | mean 212 ms, p95 308 ms |
+| Gate outcome on 300 holdout tickets | 45.0% auto-draft · 26.3% human review · 28.7% on-call |
 
 Classifier-only val calibration (ECE): type 0.016, queue 0.024, priority 0.017 after temperature scaling.
 
 ## Leakage controls
 
-- Split identical to the official snippet (and to the team's committed split — checked 100% id match).
+- Split identical to the official snippet (and to the team's earlier split in `sketch/data` — checked 100% id match).
 - Classifier fit on `train` (85% of KB), calibration + thresholds on `val` (15% of KB); holdout used once, for scoring.
 - RAG index = KB only; `retriever._index()` asserts no holdout id is present.
 - Holdout `answer` column is never written to disk; `evaluate.py` reads labels only after all predictions.

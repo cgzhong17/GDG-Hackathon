@@ -6,6 +6,7 @@ Decision levels
     AUTO_DRAFT_READY -> safe to send the grounded AI draft after a quick glance
 
 Rules (all explicit, every fired rule is reported as a reason):
+  R0 predicted priority == high AND predicted type == Incident -> ESCALATE_ONCALL (the challenge's literal rule)
   R1 high-priority incident, two tiers tuned on val (tune_gate.py) on P(high) * P(Incident):
        >= page threshold (alarm precision >= 60%)  -> ESCALATE_ONCALL
        >= review threshold (HPI recall >= 90%)      -> HUMAN_REVIEW "possible high-priority incident"
@@ -82,6 +83,8 @@ def decide(subject: str, body: str, cls: dict, precedents: list, generation: dic
     s = hpi_score(cls)
     regime = "near_dup" if str(cls["type"].get("source", "")).startswith("precedent") else "novel"
     th_review, th_page = hpi_thresholds(regime)
+    if cls["priority"]["label"] == "high" and cls["type"]["label"] == "Incident":
+        oncall.append("R0 predicted priority = high AND type = Incident")
     if s >= th_page:
         oncall.append(f"R1 high-priority incident: P(high)·P(Incident) = {s:.2f} ≥ page threshold {th_page:.2f}")
     elif s >= th_review:

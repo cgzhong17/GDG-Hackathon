@@ -1,10 +1,9 @@
-"""Shared paths and tunable constants for SentinelDesk (Eason's version)."""
+"""Shared paths and tunable constants for SentinelDesk."""
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parent
-RAW_CSV = REPO / "data" / "aa_dataset-tickets-multi-lang-5-2-50-version.csv"
-TEAM_SPLIT_DIR = REPO / "data"          # team's committed split, used only for a consistency check
+RAW_CSV = HERE / "data" / "aa_dataset-tickets-multi-lang-5-2-50-version.csv"
+TEAM_SPLIT_DIR = HERE / "sketch" / "data"   # earlier team split, used only for an optional consistency check
 ART = HERE / "artifacts"                # everything generated lives here (git-ignored)
 ART.mkdir(exist_ok=True)
 
