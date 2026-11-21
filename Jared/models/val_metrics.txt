@@ -1,0 +1,43 @@
+===== type =====
+type      accuracy=0.863  macro-F1=0.872  (14s)
+              precision    recall  f1-score   support
+
+      Change      0.989     0.972     0.980       354
+    Incident      0.855     0.824     0.839      1434
+     Problem      0.650     0.703     0.676       680
+     Request      0.992     0.995     0.993       963
+
+    accuracy                          0.863      3431
+   macro avg      0.871     0.873     0.872      3431
+weighted avg      0.866     0.863     0.864      3431
+
+===== queue =====
+queue     accuracy=0.570  macro-F1=0.570  (68s)
+                                 precision    recall  f1-score   support
+
+           Billing and Payments      0.791     0.782     0.787       349
+               Customer Service      0.488     0.573     0.527       499
+                General Inquiry      0.538     0.389     0.452        36
+                Human Resources      0.857     0.525     0.651        80
+                     IT Support      0.473     0.510     0.491       410
+                Product Support      0.516     0.493     0.504       655
+          Returns and Exchanges      0.500     0.531     0.515       160
+            Sales and Pre-Sales      0.509     0.450     0.477       129
+Service Outages and Maintenance      0.689     0.734     0.711       154
+              Technical Support      0.606     0.575     0.590       959
+
+                       accuracy                          0.570      3431
+                      macro avg      0.597     0.556     0.570      3431
+                   weighted avg      0.575     0.570     0.570      3431
+
+===== priority =====
+priority  accuracy=0.607  macro-F1=0.593  (22s)
+              precision    recall  f1-score   support
+
+        high      0.638     0.665     0.652      1342
+         low      0.506     0.528     0.517       708
+      medium      0.630     0.590     0.610      1381
+
+    accuracy                          0.607      3431
+   macro avg      0.592     0.595     0.593      3431
+weighted avg      0.608     0.607     0.607      3431

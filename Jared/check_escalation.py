@@ -1,4 +1,4 @@
-﻿"""
+"""
 SentinelDesk - High-Priority Incident escalation gate = model rule + keyword safety net.
 
 1) Model rule (threshold chosen on the validation set):
@@ -12,7 +12,10 @@ Run:  python check_escalation.py
 """
 import re
 
-from predict import predict_ticket
+try:
+    from .predict import predict_ticket      # imported as Jared.check_escalation
+except ImportError:
+    from predict import predict_ticket       # run as a script
 
 P_HIGH_MIN = 0.30
 P_INCIDENT_MIN = 0.30

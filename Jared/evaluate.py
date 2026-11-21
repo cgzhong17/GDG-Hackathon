@@ -1,4 +1,4 @@
-﻿"""
+"""
 SentinelDesk - Step 4: calibrate confidence on VAL, then final scores on the 20% TEST.
 
 Input : models/sentinel_classifier.joblib, data/val.csv, data/test.csv
@@ -21,8 +21,9 @@ from scipy.optimize import minimize_scalar
 from scipy.special import log_softmax, softmax
 from sklearn.metrics import accuracy_score, classification_report, f1_score
 
-DATA = Path("data")
-MODELS = Path("models")
+ROOT = Path(__file__).resolve().parent.parent   # repo root
+DATA = ROOT / "data"
+MODELS = Path(__file__).resolve().parent / "models"   # Jared/models
 BUNDLE_PATH = MODELS / "sentinel_classifier.joblib"
 THRESHOLDS = [0.4, 0.5, 0.6, 0.7, 0.8]
 

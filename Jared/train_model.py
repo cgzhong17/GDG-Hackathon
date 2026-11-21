@@ -1,4 +1,4 @@
-﻿"""
+"""
 SentinelDesk - Step 3: train the three classifiers (type, queue, priority).
 
 Input : data/train.csv, data/val.csv     (created by prepare_data.py)
@@ -20,8 +20,9 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score
 from sklearn.pipeline import make_union
 
 TARGETS = ["type", "queue", "priority"]
-DATA = Path("data")
-MODELS = Path("models")
+ROOT = Path(__file__).resolve().parent.parent   # repo root
+DATA = ROOT / "data"
+MODELS = Path(__file__).resolve().parent / "models"   # Jared/models
 MODELS.mkdir(exist_ok=True)
 
 train = pd.read_csv(DATA / "train.csv", keep_default_na=False)
