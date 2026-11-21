@@ -1,4 +1,4 @@
-﻿"""
+"""
 SentinelDesk - Step 2: clean the raw CSV and make the OFFICIAL 80/20 split.
 
 The split follows the official challenge snippet exactly:
@@ -16,9 +16,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 RANDOM_STATE = 42
-DATA = Path("data")
+ROOT = Path(__file__).resolve().parent.parent   # repo root
+DATA = ROOT / "data"
 
-df = pd.read_csv(DATA / "raw_tickets.csv")
+df = pd.read_csv(DATA / "aa_dataset-tickets-multi-lang-5-2-50-version.csv")
 print("Loaded rows:", len(df))
 
 # 1) Official shuffle + ticket IDs (same as the challenge quick-start snippet)

@@ -1,0 +1,47 @@
+===== type =====
+              precision    recall  f1-score   support
+
+      Change      0.978     0.967     0.973       607
+    Incident      0.835     0.814     0.824      2259
+     Problem      0.672     0.704     0.688      1216
+     Request      0.990     0.993     0.992      1636
+
+    accuracy                          0.858      5718
+   macro avg      0.869     0.870     0.869      5718
+weighted avg      0.860     0.858     0.859      5718
+
+===== queue =====
+                                 precision    recall  f1-score   support
+
+           Billing and Payments      0.801     0.771     0.786       560
+               Customer Service      0.464     0.519     0.490       857
+                General Inquiry      0.736     0.448     0.557        87
+                Human Resources      0.667     0.460     0.545       113
+                     IT Support      0.473     0.496     0.484       692
+                Product Support      0.481     0.498     0.490      1040
+          Returns and Exchanges      0.519     0.517     0.518       271
+            Sales and Pre-Sales      0.473     0.510     0.491       192
+Service Outages and Maintenance      0.773     0.747     0.759       241
+              Technical Support      0.612     0.580     0.595      1665
+
+                       accuracy                          0.562      5718
+                      macro avg      0.600     0.555     0.572      5718
+                   weighted avg      0.568     0.562     0.564      5718
+
+===== priority =====
+              precision    recall  f1-score   support
+
+        high      0.665     0.671     0.668      2231
+         low      0.538     0.571     0.554      1174
+      medium      0.636     0.610     0.623      2313
+
+    accuracy                          0.626      5718
+   macro avg      0.613     0.618     0.615      5718
+weighted avg      0.627     0.626     0.626      5718
+
+===== priority confusion matrix (rows = true) =====
+predicted  high  low  medium
+true                        
+high       1498  225     508
+low         203  670     301
+medium      551  350    1412
