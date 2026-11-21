@@ -1,0 +1,13 @@
+joblib==1.6.0
+lingua-language-detector==2.2.0
+numpy==2.5.3
+pandas==3.0.5
+scikit-learn==1.9.1
+scipy==1.18.1
+sentence-transformers==6.3.0
+streamlit==1.67.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.15.0
+sacremoses==0.2.0
+sentencepiece==0.2.3
+transformers==5.24.0
