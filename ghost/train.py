@@ -16,11 +16,12 @@ from sklearn.pipeline import make_pipeline
 from threadpoolctl import threadpool_limits
 
 ROOT = Path(__file__).resolve().parent
-CSV = ROOT / "data/dataset-tickets-multi-lang-4-20k.csv"
+CSV = ROOT.parent / "data/dataset-tickets-multi-lang-4-20k.csv"
 TARGETS = ["type", "queue", "priority"]
+NUMBER = "1"
+SAVENAME = f"triage_models{NUMBER}.joblib"
 
-
-def train():
+def train() -> None:
     data = pd.read_csv(CSV, usecols=["subject", "body", "language", *TARGETS])
     if data[TARGETS].isna().any().any():
         raise ValueError("Missing training or evaluation labels")
@@ -42,13 +43,13 @@ def train():
         cv = list(folds.split(text.iloc[tr], y, groups.iloc[tr]))
         pipeline = make_pipeline(
             TfidfVectorizer(ngram_range=(1, 2), min_df=2, sublinear_tf=True),
-            LogisticRegression(max_iter=500),
+            LogisticRegression(max_iter=1000),
         )
         model = CalibratedClassifierCV(pipeline, method="sigmoid", cv=cv, ensemble=False)
         models[target] = model.fit(text.iloc[tr], y)
         print(f"Trained {target} ({perf_counter() - start:.1f}s elapsed)", flush=True)
     result["fit_seconds"] = round(perf_counter() - start, 2)
-    artifact = ROOT / "triage_models.joblib"
+    artifact = ROOT / SAVENAME
     joblib.dump(models, artifact, compress=3)
     models = joblib.load(artifact)
 
